@@ -17,3 +17,5 @@ docker run --rm --name seeder --network agent-net --label project=chinook-agent 
 docker run -d --name gateway --network agent-net --label project=chinook-agent -v /var/run/docker.sock:/var/run/docker.sock -v "$(pwd)/mcp_config.yaml:/mcp_config.yaml:ro" -v "$(pwd)/mcp_secret.env:/run/secrets/database-url:ro" docker/mcp-gateway:latest --transport=sse --secrets=/run/secrets/database-url --allow-unauthenticated --servers=cockroachdb --tools=execute_query --config=/mcp_config.yaml
 
 until docker logs gateway 2>&1 | grep -q 8811; do sleep 1; done
+
+docker run --rm --name agent --network agent-net --label project=chinook-agent -v "$(pwd)/secret.ollama-api-key:/run/secrets/openai-api-key:ro" -e MCP_SERVER_URL=http://gateway:8811/sse -e DATABASE_DIALECT=PostgreSQL -e "QUESTION=What are the top 3 albums by sales?" -e OPENAI_API_BASE_URL=https://ollama.com/v1 -e OPENAI_MODEL_NAME=gpt-oss:20b chinook-agent

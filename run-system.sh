@@ -9,3 +9,5 @@ docker run -d --name chinook-db --network agent-net --label project=chinook-agen
 until docker exec chinook-db pg_isready -h localhost -U chinook; do sleep 1; done
 
 docker build --target seeder --label project=chinook-agent -t chinook-seeder .
+
+docker build --target agent --label project=chinook-agent -t chinook-agent .

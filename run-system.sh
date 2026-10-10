@@ -11,3 +11,5 @@ until docker exec chinook-db pg_isready -h localhost -U chinook; do sleep 1; don
 docker build --target seeder --label project=chinook-agent -t chinook-seeder .
 
 docker build --target agent --label project=chinook-agent -t chinook-agent .
+
+docker run --rm --name seeder --network agent-net --label project=chinook-agent -v "$(pwd)/Chinook.db:/app/Chinook.db:ro" -e SQLITE_FILE=/app/Chinook.db -e DATABASE_URL=postgres://chinook:chinookpass@chinook-db:5432/chinook chinook-seeder
